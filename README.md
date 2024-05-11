@@ -61,14 +61,16 @@ Benefits of Using the Circuit Breaker Pattern
     Feedback: The pattern provides feedback to the system operators about the health of services, which can trigger alerts or invoke recovery procedures.
 
 
-#######Project Overview: ######
+**#######  Project Overview: ######      
+**
+
 The code simulates an e-commerce platform where a PaymentService is used to process payments. To handle potential service failures, a CircuitBreaker pattern is implemented. The goal of the circuit breaker is to prevent a cascade of failures when a remote service is down or is too slow to respond, which could cause resource exhaustion and further service degradation.
 
 
-Main Components:
+**Main Components:
+**
 
-
-ECommercePlatform: Contains the main method to simulate the order processing flow using PaymentService.
+1. ECommercePlatform: Contains the main method to simulate the order processing flow using PaymentService.
 PaymentService: Simulates a remote payment processing service that may fail after a certain number of successful requests.
 CircuitBreaker: Implements the circuit breaker pattern to handle failures in the PaymentService.
 Supplier<T>: A functional interface representing a supplier of results, which can throw an exception.
@@ -77,7 +79,7 @@ ECommercePlatform Main Method:
 The main method initializes the PaymentService and the CircuitBreaker with a failure threshold of 3 and a timeout of 10 seconds. It then simulates 20 order requests in a loop. Each order request attempts a payment through the CircuitBreaker. If an exception occurs, it's caught, and after 3 failed attempts, the PaymentService is set to recover using recoverService(). Additionally, after every 5 successful attempts post-recovery, the service is reset to fail again using resetService().
 
 
-PaymentService Class:
+2. PaymentService Class:
 
 
 requestCount: Tracks the number of payment requests made.
@@ -87,7 +89,7 @@ processPayment(): Attempts to process a payment and simulates failures after a c
 recoverService(): Recovers the service, making future calls to processPayment() succeed.
 resetService(): Resets the service to its initial state, allowing it to simulate failures again.
 
-CircuitBreaker Class:
+3. CircuitBreaker Class:
 
 
 failureThreshold: The number of failures that cause the circuit breaker to open.
@@ -99,7 +101,7 @@ attemptPayment(Supplier<String> paymentCall): This method is the core of the Cir
 reset(): Resets the circuit breaker to the CLOSED state.
 recordFailure(Exception exception): Records a failure, increments the failureCount, and may open the circuit if the failureThreshold is reached.
 
-CircuitBreakerState Enum:
+4. CircuitBreakerState Enum:
 Defines the possible states of the circuit breaker:
 
 
@@ -107,8 +109,8 @@ CLOSED: Normal operation state, where calls are allowed through.
 OPEN: The circuit is open, and calls are not allowed through to prevent further failures.
 HALF_OPEN: A state where the circuit breaker allows a limited number of test calls to see if the underlying service has recovered.
 
-Execution Flow:
-
+**Execution Flow:
+**
 
 The CircuitBreaker is initially in the CLOSED state, allowing all payment attempts to proceed.
 If the PaymentService fails more times than the failureThreshold, the CircuitBreaker transitions to the OPEN state. Further calls are blocked, and an exception with a message indicating the service is not available is thrown.
