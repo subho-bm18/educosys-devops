@@ -1,0 +1,10 @@
+aws_region          = "us-east-1"
+vpc_name            = "subhodeep-vpc"
+name                = "subhodeep-vpc"
+stack_name          = "subhodeep"
+environment         = "dev"
+internal_subnets    = ["10.0.1.0/24", "10.0.2.0/24"]
+external_subnets    = ["10.0.101.0/24", "10.0.102.0/24"]
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+billing             = "12345"
+component           = "networking"
