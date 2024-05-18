@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    environment {
+        WORKSPACE_DIR = "${env.WORKSPACE}"
+        MASKED_USERNAME = '*********' // The masked username with asterisks
+        username ="Subhodeep"
+    }
+
+    stages {
+        stage('Environment Info') {
+            steps {
+                script {
+                    echo "Workspace directory: ${WORKSPACE_DIR}"
+                    // Replace the username "Subhodeep" with MASKED_USERNAME
+                    String displayUsername = (env.BUILD_USER_ID == 'Subhodeep') ? MASKED_USERNAME : (env.BUILD_USER_ID ?: 'unknown')
+                    echo "Username of the user running the build: ${env.username}"
+                }
+            }
+        }
+
+        stage('Create and Display Text File') {
+            steps {
+                script {
+                    writeFile file: 'sample.txt', text: 'Hello, Jenkins Pipeline!'
+                    def fileContents = readFile 'sample.txt'
+                    echo "Contents of sample.txt:\n${fileContents}"
+                }
+            }
+        }
+
+        stage('List Files') {
+            steps {
+                script {
+                    def fileList = sh(script: "ls -l ${WORKSPACE_DIR}", returnStdout: true).trim()
+                    echo "Files in workspace directory:\n${fileList}"
+                }
+            }
+        }
+
+        stage('Execute Shell Command') {
+            steps {
+                sh 'echo "Hello, this is a shell script execution."'
+            }
+        }
+
+        stage('Archive Text Files') {
+            steps {
+                archiveArtifacts artifacts: '*.txt', allowEmptyArchive: true
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                echo 'Build was successful. (This is where we would send an email notification if SMTP was configured.)'
+                // Dummy email step with masked username
+                echo "Dummy Email: Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Check out the build details at: ${env.BUILD_URL}"
+            }
+        }
+        failure {
+            script {
+                echo 'Build failed. (This is where we would send an email notification if SMTP was configured.)'
+                // Dummy email step with masked username
+                echo "Dummy Email: Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Check out the build details at: ${env.BUILD_URL}"
+            }
+        }
+    }
+}
