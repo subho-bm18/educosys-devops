@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    stages {
+        stage('Deploy to AWS') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_ACCESS_KEY_ID']]) {
+                    // Inside this block, the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+                    // environment variables are automatically set and masked
+                    sh 'aws s3 ls' // Example AWS CLI command
+                }
+            }
+        }
+    }
+}
+
+
+// pipeline {
+//     agent any
+//     environment {
+//         // The ID used here should match the one you set when storing the credentials
+//         AWS_CREDENTIALS = credentials('AWS_ACCESS_KEY_ID')
+//     }
+//     stages {
+//         stage('Deploy to AWS') {
+//             steps {
+//                 withEnv(["AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}", "AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}"]) {
+//                     // Your AWS CLI commands go here
+//                     sh 'aws s3 ls'
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
+// pipeline {
+//     agent any
+//     environment {
+//         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+//         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+//         AWS_DEFAULT_REGION = 'us-east-1'
+//     }
+//     stages {
+//         stage('Deploy to AWS') {
+//             steps {
+//                 sh 'aws s3 ls' // Example command
+//             }
+//         }
+//     }
+// }
